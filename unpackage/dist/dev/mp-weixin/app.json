@@ -1,0 +1,17 @@
+{
+  "pages": [
+    "pages/hoem1/hoem1",
+    "pages/index/index",
+    "pages/translate/translate",
+    "pages/roleList/roleList"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "chatKT",
+    "navigationBarBackgroundColor": "#1d2340",
+    "backgroundColor": "#F8F8F8"
+  },
+  "usingComponents": {},
+  "sitemapLocation": "sitemap.json"
+}

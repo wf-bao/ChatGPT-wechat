@@ -1,0 +1,49 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	    {
+	        "path" : "pages/hoem1/hoem1",
+	        "style" :                                                                                    
+	        {
+	            "navigationBarTitleText": "若菈Ai",
+				"navigationBarTextStyle": "white",
+	            "enablePullDownRefresh": false,
+				"navigationStyle": "default"
+	        }
+	        
+	    }
+		,{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "chatKT",
+				"navigationStyle": "custom"
+			}
+		}
+        ,{
+            "path" : "pages/translate/translate",
+            "style" :
+            {
+                "navigationBarTitleText": "文章润色",
+                "enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#fff"
+            }
+            
+        }
+        ,{
+            "path" : "pages/roleList/roleList",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "指令列表",
+                "enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#fff"
+            }
+            
+        }
+    ],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "chatKT",
+		"navigationBarBackgroundColor": "#1d2340",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {}
+}

@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "指令列表",
+  "enablePullDownRefresh": false,
+  "navigationBarBackgroundColor": "#fff",
+  "usingComponents": {
+    "uni-card": "/uni_modules/uni-card/components/uni-card/uni-card"
+  }
+}

@@ -1,0 +1,62 @@
+.container {
+  padding: 0 5%;
+  margin-bottom: 3rem;
+}
+.container .select_btn {
+  margin-top: 1rem;
+}
+.container .select_btn button {
+  padding: 6px 14px;
+  line-height: normal;
+  font-size: 16px;
+  margin-right: 22rpx;
+}
+.container .role_list {
+  margin-top: 1rem;
+}
+.container .role_list .title {
+  text-align: center;
+  position: relative;
+}
+.container .role_list .title::after {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  display: block;
+  content: "";
+  border-bottom: 1px solid #48BB78;
+  width: 50px;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+}
+.container .role_list .care_list {
+  position: relative;
+}
+.container .role_list .care_list .copy {
+  position: absolute;
+  display: block;
+  width: 70rpx;
+  height: 48rpx;
+  background-color: #ccc;
+  right: 28rpx;
+  top: 16rpx;
+  opacity: 0;
+}
+.container .select_all {
+  text-align: center;
+}
+.container .select_all uni-card {
+  text-align: initial;
+  position: relative;
+}
+.container .select_all uni-card .copy {
+  position: absolute;
+  display: block;
+  width: 70rpx;
+  height: 48rpx;
+  background-color: #ccc;
+  right: 28rpx;
+  top: 16rpx;
+  opacity: 0;
+}
+
