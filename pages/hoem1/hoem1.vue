@@ -33,8 +33,7 @@
 
 			};
 		},
-		onLoad() {
-			},
+		onLoad() {},
 		onLaunch: function() {
 			// 设置分享时带上分享信息
 			wx.showShareMenu({

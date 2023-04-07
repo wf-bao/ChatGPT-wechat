@@ -182,8 +182,8 @@ var _default =
 {
   data: function data() {
     return {
-      apiUrl: 'https://ryukrobot.ren/api/v1/chat/completions', // 必填 后端转发地址
-      apiKey: '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', // 必填 你的apikey
+      apiUrl: '', // 必填 后端转发地址
+      apiKey: '', // 必填 你的apikey
       createText: '生成',
       beforeData: '',
       afterData: '',

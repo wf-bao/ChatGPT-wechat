@@ -172,8 +172,7 @@ var _default =
 
 
   },
-  onLoad: function onLoad() {
-  },
+  onLoad: function onLoad() {},
   onLaunch: function onLaunch() {
     // 设置分享时带上分享信息
     wx.showShareMenu({
