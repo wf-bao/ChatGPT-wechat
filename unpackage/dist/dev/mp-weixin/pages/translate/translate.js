@@ -182,6 +182,8 @@ var _default =
 {
   data: function data() {
     return {
+      apiUrl: 'https://ryukrobot.ren/api/v1/chat/completions', // 必填 后端转发地址
+      apiKey: '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', // 必填 你的apikey
       createText: '生成',
       beforeData: '',
       afterData: '',
@@ -244,11 +246,11 @@ var _default =
           "content": this.beforeData });
 
         uni.request({
-          url: 'https://ryukrobot.ren/api/v1/chat/completions',
+          url: this.apiUrl,
           method: 'POST',
           header: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer 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' },
+            'Authorization': 'Bearer ' + this.apiKey },
 
           data: {
             // 问答

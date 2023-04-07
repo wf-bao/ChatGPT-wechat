@@ -34,7 +34,7 @@
   },
   "compileType": "miniprogram",
   "libVersion": "2.30.2",
-  "appid": "wx00da9a730ec5adfe",
+  "appid": "touristappid",
   "projectname": "chatgpt问答助手",
   "condition": {
     "search": {

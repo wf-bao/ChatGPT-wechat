@@ -3,23 +3,6 @@
   "version": "1.0.0",
   "description": "ChatGPT 微信小程序版 uniapp版",
   "main": "main.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/1311167813/CHATGPT.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/1311167813/CHATGPT/issues"
-  },
-  "homepage": "https://github.com/1311167813/CHATGPT#readme",
-  "devDependencies": {
-    "mini-program-iconfont-cli": "^0.6.1"
-  },
   "dependencies": {
     "axios": "^0.19.2",
     "balanced-match": "^1.0.2",
@@ -47,5 +30,12 @@
     "wrappy": "^1.0.2",
     "xml2js": "^0.4.23",
     "xmlbuilder": "^11.0.1"
-  }
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

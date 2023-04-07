@@ -173,34 +173,6 @@ var _default =
 
   },
   onLoad: function onLoad() {
-    // wx.login({
-    // 	success(res) {
-    // 		if (res.code) {
-    // 			//发起网络请求
-    // 			wx.request({
-    // 				url: `https://api.weixin.qq.com/sns/jscode2session?appid=wx00da9a730ec5adfe&secret=a086f511df6c9eb7aa75439938da3f4e&js_code=${res.code}&grant_type=authorization_code`,
-    // 				success: (res) => {
-    // 					//获取到你的openid
-    // 					uni.setStorageSync('t_k',res.data.openid)
-    // 				}
-    // 			})
-    // 		} else {
-    // 			console.log('登录失败！' + res.errMsg)
-    // 		}
-    // 	}
-    // })
-    // uni.request({
-    // 	url: 'https://api.weixin.qq.com/cgi-bin/token',
-    // 	data: {
-    // 		grant_type: 'client_credential',
-    // 		appid : 'wx00da9a730ec5adfe',
-    // 		secret: 'a086f511df6c9eb7aa75439938da3f4e'
-    // 	},
-    // 	success: (res) => {
-    // 		//获取到你的access_token
-    // 		uni.setStorageSync('access_token',res.data.access_token)
-    // 	}
-    // })
   },
   onLaunch: function onLaunch() {
     // 设置分享时带上分享信息

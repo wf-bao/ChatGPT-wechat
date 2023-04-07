@@ -251,7 +251,10 @@ var _default =
 {
   data: function data() {
     return {
+      apiUrl: '', // 必填 后端转发地址
+      apiKey: '', // 必填 你的apikey
       startChatFlag: false,
+      changeFlag: false,
       newRecords: {},
       chatRecords: [],
       inputHeight: 0, // 软键盘的高度
@@ -291,10 +294,18 @@ var _default =
     this.preserveRecords();
   },
   methods: {
+    newRecordsBtn: function newRecordsBtn() {// 新聊天记录
+      this.$refs.popup.close();
+      this.$refs.popup1.close();
+
+      this.list = [];
+      this.msgContent = [];
+    },
     changeRecord: function changeRecord(i) {// 切换聊天记录
       this.$refs.popup.close();
       this.$refs.popup1.close();
 
+      this.newRecords = {};
       this.list = this.chatRecords[i].list;
       this.msgContent = this.chatRecords[i].msgContent;
 
@@ -303,7 +314,8 @@ var _default =
       this.chatRecords.unshift(this.newRecords); // 将此聊天记录放入第一位
 
       this.chatRecords.splice(i + 1, 1);
-      this.newRecords = {};
+      this.changeFlag = true;
+      this.moveTo();
 
       if (this.startChatFlag) {
         wx.setStorage({
@@ -315,9 +327,14 @@ var _default =
     },
     preserveRecords: function preserveRecords() {// 保存聊天记录
       if (this.startChatFlag) {
-        this.newRecords.list = this.list;
-        this.newRecords.msgContent = this.msgContent;
-        this.chatRecords.unshift(this.newRecords); // 将此聊天记录放入第一位
+        var records = {};
+        records.list = this.list;
+        records.msgContent = this.msgContent;
+        if (this.changeFlag) {
+          this.changeFlag = false;
+        } else {
+          this.chatRecords.unshift(records); // 将此聊天记录放入第一位
+        }
         if (this.chatRecords.length > 3) {// 长度大于3时删除
           this.chatRecords.pop();
         }
@@ -335,6 +352,18 @@ var _default =
       uni.removeStorageSync("chatRecords");
       this.$refs.popup.close();
       this.$refs.popup1.close();
+    },
+    moveTo: function moveTo() {var _this = this;
+      setTimeout(function () {
+        uni.createSelectorQuery().in(_this).select('#chatWindow').fields({
+          size: true },
+        function (data) {
+          uni.pageScrollTo({
+            scrollTop: data.height,
+            duration: 300 });
+
+        }).exec();
+      }, 100);
     },
     closeFingerboard: function closeFingerboard() {
       this.inputHeight = 0;
@@ -372,7 +401,7 @@ var _default =
       // 通过组件定义的ref调用uni-popup方法 ,如果传入参数 ，type 属性将失效 ，仅支持 ['top','left','bottom','right','center']
       this.$refs.popup.open('top');
     },
-    getToBase64: function getToBase64(type) {var _this = this; // 图片转base64
+    getToBase64: function getToBase64(type) {var _this2 = this; // 图片转base64
       wx.chooseImage({
         count: '1', // 最多可以选择的图片张数
         sizeType: ['original', 'compressed'], // ['原图','压缩图']
@@ -383,16 +412,16 @@ var _default =
             encoding: 'base64', //编码格式
             success: function success(res) {//成功的回调
               if (type) {// 判断是用户还是ai头像
-                _this.defaultData.userImg = 'data:image/png;base64,' + res.data;
+                _this2.defaultData.userImg = 'data:image/png;base64,' + res.data;
                 wx.setStorage({
                   key: "userImg",
-                  data: _this.defaultData.userImg });
+                  data: _this2.defaultData.userImg });
 
               } else {
-                _this.defaultData.aiImg = 'data:image/png;base64,' + res.data;
+                _this2.defaultData.aiImg = 'data:image/png;base64,' + res.data;
                 wx.setStorage({
                   key: "imgUrl",
-                  data: _this.defaultData.aiImg });
+                  data: _this2.defaultData.aiImg });
 
               }
             } });
@@ -406,10 +435,8 @@ var _default =
 
     },
     // 发送
-    submit: function submit() {var _this2 = this;
-      // this.checkSensitive(this.text)
+    submit: function submit() {var _this3 = this;
       if (this.titleFlag) {var _data;
-        // this.text.replace(/chatgpt/gi,"/")
         var obj = {
           f: false,
           text: this.text };
@@ -422,13 +449,13 @@ var _default =
         this.defaultData.navTitle = '对方正在输入中...';
         this.titleFlag = false;
         this.text = '';
+        this.moveTo();
         uni.request({
-          // url:'https://chatrobot.link/api/v1/images/generations',
-          url: 'https://ryukrobot.ren/api/v1/chat/completions',
+          url: this.apiUrl,
           method: 'POST',
           header: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer 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' },
+            'Authorization': 'Bearer ' + this.apiKey },
 
           data: (_data = {
             // 问答
@@ -442,23 +469,20 @@ var _default =
           0), _defineProperty(_data, "max_tokens",
           2000), _data),
 
-
-
-
-
           success: function success(res) {
             console.log('success', res);
             var str = res.data.choices[0].message;
             str.content = str.content.replace(/chatgpt|OpenAI/gi, "人工智能");
             str.content = str.content.replace(/GPT/gi, "AI");
-            _this2.titleFlag = true;
+            _this3.titleFlag = true;
             if (res.statusCode == 200) {
-              _this2.msgContent.push(str);
+              _this3.msgContent.push(str);
               var _obj = {
                 f: true,
                 text: str.content };
 
-              _this2.list.push(_obj);
+              _this3.list.push(_obj);
+              _this3.moveTo();
             } else {
               setTimeout(function () {
                 uni.showToast({
@@ -469,16 +493,16 @@ var _default =
           },
           complete: function complete(res) {
             console.log('complete', res);
-            _this2.startChatFlag = true;
+            _this3.startChatFlag = true;
             if (res.errMsg == 'request:fail timeout') {
-              _this2.titleFlag = true;
+              _this3.titleFlag = true;
               wx.showToast({
                 title: '发送失败请重试~',
                 icon: "none",
                 mask: "true" //是否设置点击蒙版，防止点击穿透
               });
             }
-            _this2.defaultData.navTitle = 'ChatAI';
+            _this3.defaultData.navTitle = 'ChatAI';
           } });
 
       } else {
@@ -488,50 +512,7 @@ var _default =
           mask: "true" //是否设置点击蒙版，防止点击穿透
         });
       }
-    }
-    // checkSensitive(txt) { // 敏感词检测
-    // 	let t_k = wx.getStorageSync("t_k")
-    // 	let accessToken = wx.getStorageSync("access_token")
-    // 	uni.request({
-    // 		url: 'https://api.weixin.qq.com/wxa/msg_sec_check?access_token=' + accessToken,
-    // 		method: 'POST',
-    // 		data: {
-    // 			"openid": t_k,
-    // 			"scene": 3,
-    // 			"version": 2,
-    // 			"content": txt
-    // 		},
-    // 		success: (res) => {
-    // 			console.log(res)
-    // 			if (res.data.result.suggest == 'review' || res.data.result.suggest == 'risky') {
-    // 				let tip = ''
-    // 				switch (res.data.result.label) {
-    // 					case 20001:
-    // 						tip = "时政";
-    // 						break;
-    // 					case 20002:
-    // 						tip = "色情";
-    // 						break;
-    // 					case 20003:
-    // 						tip = "辱骂";
-    // 						break;
-    // 					case 20006:
-    // 						tip = "违法犯罪";
-    // 						break;
-    // 					case 21000:
-    // 						tip = "其他";
-    // 						break;
-    // 				}
-    // 				// wx.showToast({
-    // 				// 	title: '内容有敏感词：' + tip,
-    // 				// 	icon: "none",
-    // 				// 	mask: "true" //是否设置点击蒙版，防止点击穿透
-    // 				// })
-    // 			}
-    // 		}
-    // 	})
-    // }
-  } };exports.default = _default;
+    } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),

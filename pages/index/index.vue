@@ -4,12 +4,11 @@
 		<uni-nav-bar class="custom_nav" dark :fixed="true" shadow background-color="#fff" color="black" status-bar
 			left-icon="left" :title="defaultData.navTitle" @clickLeft="back" />
 		<!-- 聊天界面 -->
-		<view class="list">
+		<view class="list" id="chatWindow">
 			<block v-for="(item,index) in list" :key="index">
 				<view v-if="item.f" class="item-f">
 					<i v-if="defaultData.aiImg == ''" class="iconfont" @click="openPopTop()">&#xe6c3;</i>
 					<image v-else :src="defaultData.aiImg" mode="aspectFill" @click="open()"></image>
-					<!-- <view @click="copyMassage(item.text)">{{item.text}}</view> -->
 					<view class="mark_down" @click="copyMassage(item.text)">
 						<zero-markdown-view :themeColor="themeColor" :markdown="item.text"></zero-markdown-view>
 					</view>
@@ -49,7 +48,8 @@
 		<!-- 聊天记录弹窗 -->
 		<uni-popup ref="popup1" background-color="#fff">
 			<view class="pop_left">
-				<button type="primary" plain style="color: #fff;border-color: #fff;">+ New chat</button>
+				<button type="primary" plain style="color: #fff;border-color: #fff;" @click="newRecordsBtn()">+ New
+					chat</button>
 				<view v-for="(item, index) of chatRecords" :key="index" class="toke_list" @click="changeRecord(index)">
 					<i class="iconfont icon2">&#xe635;</i>
 					<view class="title">
@@ -74,7 +74,10 @@
 	export default {
 		data() {
 			return {
+				apiUrl: '', // 必填 后端转发地址
+				apiKey: '', // 必填 你的apikey
 				startChatFlag: false,
+				changeFlag: false,
 				newRecords: {},
 				chatRecords: [],
 				inputHeight: 0, // 软键盘的高度
@@ -114,10 +117,18 @@
 			this.preserveRecords()
 		},
 		methods: {
+			newRecordsBtn() { // 新聊天记录
+				this.$refs.popup.close()
+				this.$refs.popup1.close()
+
+				this.list = []
+				this.msgContent = []
+			},
 			changeRecord(i) { // 切换聊天记录
 				this.$refs.popup.close()
 				this.$refs.popup1.close()
 
+				this.newRecords = {}
 				this.list = this.chatRecords[i].list
 				this.msgContent = this.chatRecords[i].msgContent
 
@@ -126,7 +137,8 @@
 				this.chatRecords.unshift(this.newRecords) // 将此聊天记录放入第一位
 
 				this.chatRecords.splice(i + 1, 1)
-				this.newRecords = {}
+				this.changeFlag = true
+				this.moveTo()
 
 				if (this.startChatFlag) {
 					wx.setStorage({
@@ -138,9 +150,14 @@
 			},
 			preserveRecords() { // 保存聊天记录
 				if (this.startChatFlag) {
-					this.newRecords.list = this.list
-					this.newRecords.msgContent = this.msgContent
-					this.chatRecords.unshift(this.newRecords) // 将此聊天记录放入第一位
+					let records = {}
+					records.list = this.list
+					records.msgContent = this.msgContent
+					if (this.changeFlag) {
+						this.changeFlag = false
+					} else {
+						this.chatRecords.unshift(records) // 将此聊天记录放入第一位
+					}
 					if (this.chatRecords.length > 3) { // 长度大于3时删除
 						this.chatRecords.pop()
 					}
@@ -158,6 +175,18 @@
 				uni.removeStorageSync("chatRecords")
 				this.$refs.popup.close()
 				this.$refs.popup1.close()
+			},
+			moveTo() {
+				setTimeout(() => {
+					uni.createSelectorQuery().in(this).select('#chatWindow').fields({
+						size: true
+					}, data => {
+						uni.pageScrollTo({
+							scrollTop: data.height,
+							duration: 300
+						});
+					}).exec()
+				}, 100)
 			},
 			closeFingerboard() {
 				this.inputHeight = 0
@@ -230,9 +259,7 @@
 			},
 			// 发送
 			submit() {
-				// this.checkSensitive(this.text)
 				if (this.titleFlag) {
-					// this.text.replace(/chatgpt/gi,"/")
 					let obj = {
 						f: false,
 						text: this.text
@@ -245,13 +272,13 @@
 					this.defaultData.navTitle = '对方正在输入中...'
 					this.titleFlag = false
 					this.text = ''
+					this.moveTo()
 					uni.request({
-						// url:'https://chatrobot.link/api/v1/images/generations',
-						url: 'https://ryukrobot.ren/api/v1/chat/completions',
+						url: this.apiUrl,
 						method: 'POST',
 						header: {
 							'Content-Type': 'application/json',
-							'Authorization': 'Bearer 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'
+							'Authorization': 'Bearer ' + this.apiKey
 						},
 						data: {
 							// 问答
@@ -264,10 +291,6 @@
 							top_p: 0.8,
 							frequency_penalty: 0,
 							max_tokens: 2000
-							// 图片
-							// "prompt": obj.text,
-							// "n": 2, // 返回图片数量
-							// "size": "256x256" ,// 大小
 						},
 						success: (res) => {
 							console.log('success', res);
@@ -282,6 +305,7 @@
 									text: str.content
 								}
 								this.list.push(obj)
+								this.moveTo()
 							} else {
 								setTimeout(() => {
 									uni.showToast({
@@ -311,49 +335,7 @@
 						mask: "true" //是否设置点击蒙版，防止点击穿透
 					})
 				}
-			},
-			// checkSensitive(txt) { // 敏感词检测
-			// 	let t_k = wx.getStorageSync("t_k")
-			// 	let accessToken = wx.getStorageSync("access_token")
-			// 	uni.request({
-			// 		url: 'https://api.weixin.qq.com/wxa/msg_sec_check?access_token=' + accessToken,
-			// 		method: 'POST',
-			// 		data: {
-			// 			"openid": t_k,
-			// 			"scene": 3,
-			// 			"version": 2,
-			// 			"content": txt
-			// 		},
-			// 		success: (res) => {
-			// 			console.log(res)
-			// 			if (res.data.result.suggest == 'review' || res.data.result.suggest == 'risky') {
-			// 				let tip = ''
-			// 				switch (res.data.result.label) {
-			// 					case 20001:
-			// 						tip = "时政";
-			// 						break;
-			// 					case 20002:
-			// 						tip = "色情";
-			// 						break;
-			// 					case 20003:
-			// 						tip = "辱骂";
-			// 						break;
-			// 					case 20006:
-			// 						tip = "违法犯罪";
-			// 						break;
-			// 					case 21000:
-			// 						tip = "其他";
-			// 						break;
-			// 				}
-			// 				// wx.showToast({
-			// 				// 	title: '内容有敏感词：' + tip,
-			// 				// 	icon: "none",
-			// 				// 	mask: "true" //是否设置点击蒙版，防止点击穿透
-			// 				// })
-			// 			}
-			// 		}
-			// 	})
-			// }
+			}
 		}
 	}
 </script>
