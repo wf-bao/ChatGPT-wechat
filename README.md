@@ -9,7 +9,7 @@
 
 1. 克隆项目
 ```bash
-git clone https://github.com/wf-bao/Chat_wx.git
+git clone https://github.com/wf-bao/ChatGPT-wechat.git
 ```
 
 2. 打开uniapp - 运行 - 运行到小程序模拟器
