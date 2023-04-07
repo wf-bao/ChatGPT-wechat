@@ -12,12 +12,7 @@
 git clone https://github.com/wf-bao/Chat_wx.git
 ```
 
-2. 进入项目目录
-```bash
-cd Chat_wx
-```
-
-4. 打开uniapp - 运行 - 运行到小程序模拟器
+2. 打开uniapp - 运行 - 运行到小程序模拟器
 
 ## 配置
 
