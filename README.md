@@ -1,3 +1,6 @@
+## 演示地址
+![image](https://github.com/wf-bao/img-folder/blob/main/gh_577325813a75_258%20(1).jpg)
+
 ## 功能
 - 模拟真实对话
 - 聊天记录保存
